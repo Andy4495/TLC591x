@@ -18,7 +18,7 @@ public:
   TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE);
   TLC591x(byte n, byte SDI, byte CLK, byte LE);
 
-  void print(const unsigned char* s);
+  void print(const char* s);
   void print(unsigned int n);
   void displayEnable();
   void displayDisable();

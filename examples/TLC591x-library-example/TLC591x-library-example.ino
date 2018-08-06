@@ -21,7 +21,7 @@ void loop() {
 
   // Example using 2x7 segment display
   // First, scroll "Arduino" across the display
-  unsigned char s[9];       // Note that this is defined as unsigned
+  char s[9]; 
   strncpy(s, "Arduino ", 8);
   for (i = 0; i < 7; i++) {
     myLED.print(&s[i]);
@@ -47,4 +47,3 @@ void loop() {
     delay(100);
   }
 }
-

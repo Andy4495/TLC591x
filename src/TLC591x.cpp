@@ -41,7 +41,7 @@ void TLC591x::init() {
   pinMode(LE_pin, OUTPUT);
 }
 
-void TLC591x::print(const unsigned char* s) {
+void TLC591x::print(const char* s) {
   int i;
   char c;
   byte pos;
@@ -50,8 +50,8 @@ void TLC591x::print(const unsigned char* s) {
     // Need a range check and adjustment, since segment map starts
     // at ASCII 32 (element 0) and ends at ASCII 0x7f (element 96)
     // Out of range default to a blank character
-    if (s[i] > sizeof(ICM7218_segment_map) + 32 - 1) pos = 0;
-    else if (s[i] < 32) pos = 0;
+    // if (s[i] > 127) pos = 0; --> This would be a negative value, included in next check
+    if (s[i] < 32) pos = 0;
     else pos = s[i] - 32;
     c = ICM7218_segment_map[pos] ;
     write(c);

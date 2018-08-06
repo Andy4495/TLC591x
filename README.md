@@ -27,7 +27,7 @@ The "# of chips" parameter defines how many chips are cascaded together. The chi
 Once you have created a TLC591x object, the following methods can be
 used to control the LEDs:
 
-    void print(unsigned char* s)
+    void print(char* s)
 Use this method to control 1- or 2-digit 7-segment displays.
 
 `s` is a char array with a size of at least "# of chips" containing ASCII characters. It is similar to a c-string but does not need to be null-terminated since its size is assumed to be the "# of chips" as defined in the constructor. Any characters beyond the number of chips defined in the constructor are ignored.
