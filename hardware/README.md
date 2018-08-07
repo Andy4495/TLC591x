@@ -3,7 +3,7 @@ TLC591x Interface Board
 
 This is a reference design (schematic and PCB) that can be used with the TLC591x library.
 
-It uses two [TLC5916/7 driver chips][2] and can support a 10-segment bar graph, 10 individual LEDs, or a 2-digit 7-segment common anode LED display. Any 7-segment display that has a compatible pinout as the HP/Avago/Broadcom [HDSP-K511][1]should work with this design.
+It uses two [TLC5916/7 driver chips][2] and can support a 10-segment bar graph, 16 individual LEDs, or a 2-digit 7-segment common anode LED display. Any 7-segment display that has a pinout compatible with the HP/Avago/Broadcom [HDSP-K511][1]should work with this design.
 
 The TLC591x chip has an internal pull-down for the LE signal and an internal pull-up for the /OE signal, so neither signal is left floating at powerup.
 
