@@ -67,4 +67,4 @@ References
 + [TLC591x datasheet][1]
 
 [1]: http://www.ti.com/lit/ds/symlink/tlc5916.pdf
-[2]: ./tree/master/hardware
+[2]: ./hardware
