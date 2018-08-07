@@ -58,8 +58,13 @@ Sets the output enable (/OE) signal high, which turns off the display. This meth
     void displayDisable();
 Sets the output enable (/OE) signal low, which turns on the display. This method only has an effect if the /OE pin was defined in the constructor.
 
+Hardware Design
+---------------
+A reference design incorporating two TLC5916/7 chips and various LEDs configurations is available in the [hardware][2] folder.
+
 References
 ----------
 + [TLC591x datasheet][1]
 
 [1]: http://www.ti.com/lit/ds/symlink/tlc5916.pdf
+[2]: ./tree/master/hardware
