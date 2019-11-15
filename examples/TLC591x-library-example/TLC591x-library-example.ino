@@ -1,7 +1,7 @@
 /* Example sketch using TLC591x library  to interface
    with the Texas Instruments TLC5916 and TLC5917
    8-Channel Constant-Current LED Sink Drivers.
-   https://gitlab.com/Andy4495/TLC591x
+   https://github.com/Andy4495/TLC591x
 
 */
 /* Version History
@@ -21,7 +21,7 @@ void loop() {
 
   // Example using 2x7 segment display
   // First, scroll "Arduino" across the display
-  char s[9]; 
+  char s[9];
   strncpy(s, "Arduino ", 8);
   for (i = 0; i < 7; i++) {
     myLED.print(&s[i]);

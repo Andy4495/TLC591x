@@ -1,6 +1,6 @@
 /* Library to interface with the Texas Instruments TLC5916 and TLC5917
    8-Channel Constant-Current LED Sink Drivers.
-   https://gitlab.com/Andy4495/TLC591x
+   https://github.com/Andy4495/TLC591x
 
 */
 /* Version History
