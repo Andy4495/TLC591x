@@ -5,7 +5,7 @@ This library is designed to interface with the Texas Instruments [TLC5916 and TL
 
 The library currently only supports Normal Mode. A future iteration of the library may also support Special Mode.
 
-The library supports up to two TLC591x chips cascaded together. Future iterations may support additional chips.
+The library supports up to 254 TLC591x chips cascaded together.
 
 The TLC591x chips use a serial interface to transfer data. A minimum of three I/O pins are required (SDI, CLK, LE). An optional fourth pin can be defined for the output enable signal (/OE). If not used, the library assumes that the pin is tied low (and the LED output is always enabled).
 
@@ -22,13 +22,13 @@ Use one of the following forms of the constructor to set up the pins used to int
 
 The parameters to the constructor, in order, are: # of chips, SDI pin, CLK pin, LE pin, and /OE pin (if used). If using the /OE pin, the default state is for the display to be turned off, so the enableDisplay() method needs to be called to turn on the display.
 
-The "# of chips" parameter defines how many chips are cascaded together. The chips include a serial data output (SDO) pin so that several chips can be connected in a daisy-chain configuration. The library currently only supports 1 or 2 chip configurations.
+The "# of chips" parameter defines how many chips are cascaded together. The chips include a serial data output (SDO) pin so that several chips can be connected in a daisy-chain configuration.
 
 Once you have created a TLC591x object, the following methods can be
 used to control the LEDs:
 
     void print(char* s)
-Use this method to control 1- or 2-digit 7-segment displays.
+Use this method to control 7-segment displays.
 
 `s` is a char array with a size of at least "# of chips" containing ASCII characters. It is similar to a c-string but does not need to be null-terminated since its size is assumed to be the "# of chips" as defined in the constructor. Any characters beyond the number of chips defined in the constructor are ignored.
 
@@ -51,6 +51,10 @@ Note that a 7-segment display does not allow an accurate rendering of all ASCII 
 
     void print(unsigned int n)
 Use this method to control individual LEDs. The value `n` is shifted out to the TLC591x chip(s) one bit at a time. If a single-chip configuration was defined in the constructor, then only the least-significant 8 bits are shifted.
+*This method only supports one or two TLC591x chips, and is included for backward compatibility with older versions of the library. If you are using more than two chips, then use `printDirect()` instead.*
+
+    void printDirect(const uint8_t* b)
+Use this method to control individual LEDs or LED segments. `b` is an array of size of at least "# of chips". The values are shifted out right to left (i.e., `b[0]` is shifed out last).
 
     void displayEnable();
 Sets the output enable (/OE) signal high, which turns off the display. This method only has an effect if the /OE pin was defined in the constructor. The default state of the /OE pin when defined in the constructor is disabled.

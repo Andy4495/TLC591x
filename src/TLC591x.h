@@ -5,6 +5,8 @@
 */
 /* Version History
    1.0.0    08/03/2018  A.T.   Original
+   1.1.0    09/25/2020  A.T.   Support more daisy-chained digits.
+
 */
 #ifndef TLC591x_LIBRARY
 #define TLC591x_LIBRARY
@@ -20,13 +22,14 @@ public:
 
   void print(const char* s);
   void print(unsigned int n);
+  void printDirect(const uint8_t* s);
   void displayEnable();
   void displayDisable();
 
 private:
   enum POWER_MODE {WAKEUP = 1, SHUTDOWN = 0};
   enum {NO_DATA_COMING = 0, DATA_COMING = 1};
-  enum {MINCHIPS = 1, MAXCHIPS = 2};
+  enum {MINCHIPS = 1, MAXCHIPS = 254};
   byte SDI_pin, CLK_pin, LE_pin, OE_pin, numchips;
 
   void write(byte n);

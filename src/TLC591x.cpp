@@ -5,6 +5,9 @@
 */
 /* Version History
    1.0.0    08/03/2018  A.T.   Original
+   1.1.0    09/25/2020  A.T.   Support more daisy-chained displays.
+                               Fixed array bound issue in previous
+                               un-numbered file version.
 */
 
 #include "TLC591x.h"
@@ -60,9 +63,19 @@ void TLC591x::print(const char* s) {
 }
 
 void TLC591x::print(unsigned int n){
-  for (byte i = 0; i < numchips; i++) {
+  byte size;
+  if (numchips > 2) size = 2;
+  else size = numchips;
+  for (byte i = 0; i < size; i++) {
     write(n);
     n = n/256; // Get the next most significant byte
+  }
+  toggleLE();
+}
+
+void TLC591x::printDirect(const uint8_t* s) {
+  for (int i = numchips - 1; i >= 0; i--) {
+    write(s[i]);
   }
   toggleLE();
 }
