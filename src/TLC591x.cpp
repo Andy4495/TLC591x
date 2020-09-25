@@ -46,7 +46,7 @@ void TLC591x::print(const char* s) {
   char c;
   byte pos;
 
-  for (i = numchips; i >= 0; i--) {
+  for (i = numchips - 1; i >= 0; i--) {
     // Need a range check and adjustment, since segment map starts
     // at ASCII 32 (element 0) and ends at ASCII 0x7f (element 96)
     // Out of range default to a blank character
