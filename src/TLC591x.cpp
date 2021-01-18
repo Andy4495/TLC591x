@@ -8,6 +8,7 @@
    1.1.0    09/25/2020  A.T.   Support more daisy-chained displays.
                                Fixed array bound issue in previous
                                un-numbered file version.
+   1.2.0    01/17/2021  A.T.   Add support for special mode.
 */
 
 #include "TLC591x.h"
@@ -20,6 +21,7 @@ TLC591x::TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE) {
   numchips = n;
 
   digitalWrite(OE_pin, HIGH);
+  enableState = DISABLED;
   pinMode(OE_pin, OUTPUT);
   init();
 }
@@ -81,11 +83,48 @@ void TLC591x::printDirect(const uint8_t* s) {
 }
 
 void TLC591x::displayEnable() {
-  if (OE_pin != NO_PIN) digitalWrite(OE_pin, LOW);
+  if (OE_pin != NO_PIN) {
+    digitalWrite(OE_pin, LOW);
+    enableState = ENABLED;
+  }
 }
 
 void TLC591x::displayDisable() {
-  if (OE_pin != NO_PIN) digitalWrite(OE_pin, HIGH);
+  if (OE_pin != NO_PIN) {
+    digitalWrite(OE_pin, HIGH);
+    enableState = DISABLED;
+  }
+}
+
+void TLC591x::normalMode() {
+  if (OE_pin != NO_PIN) {
+    digitalWrite(OE_pin, HIGH);
+    toggleCLK();
+    digitalWrite(OE_pin, LOW);
+    toggleCLK();
+    digitalWrite(OE_pin, HIGH); // Disables the display
+    toggleCLK();
+    toggleCLK();   // Mode switching
+    toggleCLK();   // Now in normal mode
+    if (enableState == ENABLED) displayEnable(); // Re-enable display if it was enabled previously
+  }
+}
+
+void TLC591x::specialMode() {
+  if (OE_pin != NO_PIN) {
+    digitalWrite(OE_pin, HIGH);
+    toggleCLK();
+    digitalWrite(OE_pin, LOW);
+    toggleCLK();
+    digitalWrite(OE_pin, HIGH); // Disables the display
+    toggleCLK();
+    digitalWrite(LE_pin, HIGH);
+    toggleCLK();   // Mode switching
+    digitalWrite(LE_pin, LOW);
+    toggleCLK();   // Now in special mode
+    // Switching to special mode disables the display by default
+    enableState = DISABLED;
+  }
 }
 
 void TLC591x::write(byte n) {

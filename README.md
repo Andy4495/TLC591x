@@ -59,8 +59,14 @@ Use this method to control individual LEDs or LED segments. `b` is an array of s
     void displayEnable();
 Sets the output enable (/OE) signal high, which turns off the display. This method only has an effect if the /OE pin was defined in the constructor. The default state of the /OE pin when defined in the constructor is disabled.
 
-    void displayDisable();
-Sets the output enable (/OE) signal low, which turns on the display. This method only has an effect if the /OE pin was defined in the constructor.
+    void displayDisable();  
+Sets the output enable (/OE) signal low, which turns on the display. This method only has an effect if the /OE pin was defined in the constructor.  
+
+    void normalMode();  
+Switches the chip to Normal Mode (see [datasheet][1] for more info). The chip is in normal mode by default when powered up.
+
+    void specialMode();  
+Switches the chip to Special Mode (see [datasheet][1] for more info). The chip must have the /OE signal connected to the microcontroller (and defined in the constructor) for this method to have an effect. Note that switching to Special Mode disables the display. Once the chip is in special mode, the Configuration Latch can be written using the printDirect() method. 
 
 Hardware Design
 ---------------
