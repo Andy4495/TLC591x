@@ -28,13 +28,14 @@ public:
   void displayDisable();
   void normalMode();
   void specialMode();
+  void displayBrightness(byte b); 
 
 private:
   enum POWER_MODE {WAKEUP = 1, SHUTDOWN = 0};
   enum {NO_DATA_COMING = 0, DATA_COMING = 1};
   enum {MINCHIPS = 1, MAXCHIPS = 254};
   byte SDI_pin, CLK_pin, LE_pin, OE_pin, numchips;
-  enum {ENABLED = 1, DISABLED = 0}; 
+  enum {ENABLED = 1, DISABLED = 0};
   byte enableState;
 
   void write(byte n);

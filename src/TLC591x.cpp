@@ -127,6 +127,10 @@ void TLC591x::specialMode() {
   }
 }
 
+void TLC591x::displayBrightness(byte b) {
+  if (OE_pin != NO_PIN) analogWrite(OE_pin, b);
+}
+
 void TLC591x::write(byte n) {
   digitalWrite(SDI_pin, n & 0x01);
   toggleCLK();
