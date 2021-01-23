@@ -69,7 +69,7 @@ Switches the chip to Normal Mode (see [datasheet][1] for more info). The chip is
 Switches the chip to Special Mode (see [datasheet][1] for more info). The chip must have the /OE signal connected to the microcontroller (and defined in the constructor) for this method to have an effect. Note that switching to Special Mode disables the display. Once the chip is in special mode, the Configuration Latch can be written using the printDirect() method.
 
     void displayBrightness(byte b);   
-Use PWM on /OE pin to control display brightness. This method requires that the /OE pin is a PWM-capable pin and is defined in the constructor. 
+Use PWM on /OE pin to control display brightness. This method requires that the /OE pin is a PWM-capable pin and is defined in the constructor. Note that since /OE is active low, a value of zero is brightest and 255 is dimmest. 
 
 Hardware Design
 ---------------
