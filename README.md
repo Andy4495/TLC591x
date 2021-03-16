@@ -3,11 +3,9 @@ TLC591x Library
 
 This library is designed to interface with the Texas Instruments [TLC5916 and TLC5917 8-Channel Constant-Current LED Sink Drivers][1].
 
-The library currently only supports Normal Mode. A future iteration of the library may also support Special Mode.
-
 The library supports up to 254 TLC591x chips cascaded together.
 
-The TLC591x chips use a serial interface to transfer data. A minimum of three I/O pins are required (SDI, CLK, LE). An optional fourth pin can be defined for the output enable signal (/OE). If not used, the library assumes that the pin is tied low (and the LED output is always enabled).
+The TLC591x chips use a serial interface to transfer data. A minimum of three I/O pins are required (SDI, CLK, LE). An optional fourth pin can be defined for the output enable signal (/OE). If not used, the library assumes that the pin is tied low (and the LED output is always enabled). The /OE pin is required if you want to switch the chip to Special Mode. 
 
 The library can control various LED configurations: LED bar graph, common anode 7-segment displays, or individual LEDs.
 
