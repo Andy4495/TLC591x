@@ -77,5 +77,12 @@ References
 ----------
 + [TLC591x datasheet][1]
 
+License
+-------
+The software and other files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
+
+
 [1]: http://www.ti.com/lit/ds/symlink/tlc5916.pdf
 [2]: ./extras/hardware
+[100]: https://choosealicense.com/licenses/mit/
+[101]: ./LICENSE.txt
