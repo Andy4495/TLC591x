@@ -22,3 +22,6 @@ References
 
 [1]: https://docs.broadcom.com/docs/AV02-2555EN
 [2]: http://www.ti.com/lit/ds/symlink/tlc5916.pdf
+[100]: https://choosealicense.com/licenses/mit/
+[101]: ../../LICENSE.txt
+[200]: https://github.com/Andy4495/TLC591x
