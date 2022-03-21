@@ -1,5 +1,8 @@
 # TLC591x Library
 
+[![Arduino Compile Sketches](https://github.com/Andy4495/TLC591x/actions/workflows/arduino-compile-sketches.yml/badge.svg)](https://github.com/Andy4495/TLC591x/actions/workflows/arduino-compile-sketches.yml)
+[![Check Markdown Links](https://github.com/Andy4495/TLC591x/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/TLC591x/actions/workflows/CheckMarkdownLinks.yml)
+
 This library is designed to interface with the Texas Instruments [TLC5916 and TLC5917 8-Channel Constant-Current LED Sink Drivers][1].
 
 The library supports up to 254 TLC591x chips cascaded together.
