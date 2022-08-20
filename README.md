@@ -2,6 +2,7 @@
 
 [![Arduino Compile Sketches](https://github.com/Andy4495/TLC591x/actions/workflows/arduino-compile-sketches.yml/badge.svg)](https://github.com/Andy4495/TLC591x/actions/workflows/arduino-compile-sketches.yml)
 [![Check Markdown Links](https://github.com/Andy4495/TLC591x/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/TLC591x/actions/workflows/CheckMarkdownLinks.yml)
+[![Arduino Lint](https://github.com/Andy4495/TLC591x/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/Andy4495/TLC591x/actions/workflows/arduino-lint.yml)
 
 This library is designed to interface with the Texas Instruments [TLC5916 and TLC5917 8-Channel Constant-Current LED Sink Drivers][1].
 
