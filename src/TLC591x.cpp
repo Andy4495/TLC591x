@@ -9,10 +9,12 @@
                                Fixed array bound issue in previous
                                un-numbered file version.
    1.2.0    01/17/2021  A.T.   Add support for special mode.
+   1.3.0    08/31/2022  Andy4495  Add hardware SPI support
 */
 
 #include "TLC591x.h"
 
+// Software SPI constructors
 TLC591x::TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE) {
   SDI_pin = SDI;
   CLK_pin = CLK;
@@ -23,6 +25,7 @@ TLC591x::TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE) {
   digitalWrite(OE_pin, HIGH);
   enableState = DISABLED;
   pinMode(OE_pin, OUTPUT);
+  spiType = SW_SPI;
   init();
 }
 
@@ -33,15 +36,45 @@ TLC591x::TLC591x(byte n, byte SDI, byte CLK, byte LE) {
   OE_pin  = NO_PIN;
   numchips = n;
 
+  spiType = SW_SPI;
   init();
 }
+
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+// Hardware SPI constructors
+TLC591x::TLC591x(byte n, byte LE, byte OE) {
+  LE_pin  = LE;
+  OE_pin  = OE;
+  CLK_pin = SCK;
+  SDI_pin = NO_PIN;
+  numchips = n;
+  digitalWrite(OE_pin, HIGH);
+  enableState = DISABLED;
+  pinMode(OE_pin, OUTPUT);  
+  spiType = HW_SPI;
+  init();
+}
+
+TLC591x::TLC591x(byte n, byte LE) {
+  LE_pin  = LE;
+  OE_pin  = NO_PIN;
+  CLK_pin = SCK;
+  SDI_pin = NO_PIN;
+  numchips = n;
+  spiType = HW_SPI;
+  init();
+}
+#endif
+
 
 void TLC591x::init() {
   if (numchips < MINCHIPS) numchips = MINCHIPS;
   if (numchips > MAXCHIPS) numchips = MAXCHIPS;
 
-  pinMode(SDI_pin, OUTPUT);
-  pinMode(CLK_pin, OUTPUT);
+  if (spiType == SW_SPI) {
+    pinMode(SDI_pin, OUTPUT);
+    pinMode(CLK_pin, OUTPUT);
+  }
   digitalWrite(LE_pin, LOW);
   pinMode(LE_pin, OUTPUT);
 }
@@ -132,22 +165,32 @@ void TLC591x::displayBrightness(byte b) {
 }
 
 void TLC591x::write(byte n) {
-  digitalWrite(SDI_pin, n & 0x01);
-  toggleCLK();
-  digitalWrite(SDI_pin, n & 0x02);
-  toggleCLK();
-  digitalWrite(SDI_pin, n & 0x04);
-  toggleCLK();
-  digitalWrite(SDI_pin, n & 0x08);
-  toggleCLK();
-  digitalWrite(SDI_pin, n & 0x10);
-  toggleCLK();
-  digitalWrite(SDI_pin, n & 0x20);
-  toggleCLK();
-  digitalWrite(SDI_pin, n & 0x40);
-  toggleCLK();
-  digitalWrite(SDI_pin, n & 0x80);
-  toggleCLK();
+  if (spiType == SW_SPI) {
+    digitalWrite(SDI_pin, n & 0x01);
+    toggleCLK();
+    digitalWrite(SDI_pin, n & 0x02);
+    toggleCLK();
+    digitalWrite(SDI_pin, n & 0x04);
+    toggleCLK();
+    digitalWrite(SDI_pin, n & 0x08);
+    toggleCLK();
+    digitalWrite(SDI_pin, n & 0x10);
+    toggleCLK();
+    digitalWrite(SDI_pin, n & 0x20);
+    toggleCLK();
+    digitalWrite(SDI_pin, n & 0x40);
+    toggleCLK();
+    digitalWrite(SDI_pin, n & 0x80);
+    toggleCLK();
+  }
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+  else {
+    SPI.beginTransaction(SPISettings(10000000, LSBFIRST, SPI_MODE0));
+    SPI.transfer(n);
+    toggleLE();
+    SPI.endTransaction();
+  }
+#endif
 }
 
 void TLC591x::toggleLE() {

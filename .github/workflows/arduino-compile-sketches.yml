@@ -18,10 +18,25 @@ jobs:
             fqbn: 'energia:msp430:MSP-EXP430G2553LP'
             platform-name: 'energia:msp430'
             platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/main/json/package_energia_minimal_MSP_107_index.json'
-
+          - arch: msp432
+            fqbn: 'energia:msp432r:MSP-EXP432P401R'
+            platform-name: 'energia:msp432r'
+            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/main/json/package_energia_minimal_MSP432r_index.json'
+          - arch: tivac
+            fqbn: 'energia:tivac:EK-TM4C123GXL'
+            platform-name: 'energia:tivac'
+            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/main/json/package_energia_minimal_TM4C_104_alternate_index.json'
+ 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          java-package: 'jre'
+      - run: | 
+          if [ ! -f /usr/bin/java ] ; then ln -s $JAVA_HOME/bin/java /usr/bin/java ; fi
       - uses: arduino/compile-sketches@v1
         with:
           fqbn: ${{ matrix.fqbn }}

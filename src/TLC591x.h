@@ -7,19 +7,29 @@
    1.0.0    08/03/2018  A.T.   Original
    1.1.0    09/25/2020  A.T.   Support more daisy-chained digits.
    1.2.0    01/17/2021  A.T.   Add support for special mode.
+   1.3.0    08/31/2022  Andy4495  Add hardware SPI support
 
 */
 #ifndef TLC591x_LIBRARY
 #define TLC591x_LIBRARY
 
 #include <Arduino.h>
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+#include <SPI.h>
+#endif
 
 class TLC591x {
 public:
   enum {NO_PIN=255};
 
+  // Software SPI interface
   TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE);
   TLC591x(byte n, byte SDI, byte CLK, byte LE);
+  #if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+  // Hardware SPI interface
+  TLC591x(byte n, byte LE, byte OE);
+  TLC591x(byte n, byte LE);
+  #endif
 
   void print(const char* s);
   void print(unsigned int n);
@@ -32,11 +42,12 @@ public:
 
 private:
   enum POWER_MODE {WAKEUP = 1, SHUTDOWN = 0};
-  enum {NO_DATA_COMING = 0, DATA_COMING = 1};
   enum {MINCHIPS = 1, MAXCHIPS = 254};
+  enum {SW_SPI, HW_SPI};
   byte SDI_pin, CLK_pin, LE_pin, OE_pin, numchips;
   enum {ENABLED = 1, DISABLED = 0};
   byte enableState;
+  byte spiType;
 
   void write(byte n);
   void toggleLE();

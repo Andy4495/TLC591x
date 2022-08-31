@@ -2,25 +2,30 @@
    with the Texas Instruments TLC5916 and TLC5917
    8-Channel Constant-Current LED Sink Drivers.
 
-   This example uses software (bit-bang) interface. 
-   
+   This example uses the built-in Hardware SPI
+
    https://github.com/Andy4495/TLC591x
 
 */
 /* Version History
-   1.0.0    08/06/2018  A.T.   Original
-   1.1.0    01/23/2021  A.T.   Add examples for displayBrighness and specialMode(), normalMode()
-   1.3.0    08/31/2022  A.T.   Add ifdef to make compatible with MSP432
+   1.0.0    08/31/2022  Andy4495   Original
 */
 #include <TLC591x.h>
 #if defined(ENERGIA_ARCH_MSP432R)
 #include <stdio.h>
 #endif
 
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
 // First parameter in constructor is # of TLC591x chips -- this example assumes 2 chips
-// Constructor parameters: # of chips, SDI in, CLK pin, LE pin, OE pin (optional parameter)
-//TLC591x myLED(2, 7, 8, 9);    // Uncomment if not using OE pin
+// Constructor parameters for HW SPI: # of chips, LE pin, OE pin (optional parameter)
+//TLC591x myLED(2, 7);    // Uncomment if not using OE pin
+TLC591x myLED(2, 5, 8); // Uncomment if using OE pin
+#else
+// This is here so that automated compilation tests don't fail.
+#warning This library does not support hardware SPI on tivac and msp432r platforms
+#warning Using software SPI instead
 TLC591x myLED(2, 5, 6, 7, 8); // Uncomment if using OE pin
+#endif
 
 void setup() {
   myLED.displayEnable();     // This command has no effect if you aren't using OE pin
