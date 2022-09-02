@@ -131,6 +131,13 @@ void TLC591x::displayDisable() {
 
 void TLC591x::normalMode() {
   if (OE_pin != NO_PIN) {
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+    if (spiType == HW_SPI) {
+      SPI.end();
+      digitalWrite(CLK_pin, LOW);
+      pinMode(CLK_pin, OUTPUT);
+    }
+#endif
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -140,11 +147,23 @@ void TLC591x::normalMode() {
     toggleCLK();   // Mode switching
     toggleCLK();   // Now in normal mode
     if (enableState == ENABLED) displayEnable(); // Re-enable display if it was enabled previously
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+    if (spiType == HW_SPI) {
+      SPI.begin();
+    }
+#endif
   }
 }
 
 void TLC591x::specialMode() {
   if (OE_pin != NO_PIN) {
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+    if (spiType == HW_SPI) {
+      SPI.end();
+      digitalWrite(CLK_pin, LOW);
+      pinMode(CLK_pin, OUTPUT);
+    }
+#endif
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -155,8 +174,13 @@ void TLC591x::specialMode() {
     toggleCLK();   // Mode switching
     digitalWrite(LE_pin, LOW);
     toggleCLK();   // Now in special mode
-    // Switching to special mode disables the display by default
-    enableState = DISABLED;
+    // Switching to special mode disables the display
+    // normalMode() automatically re-enables display if it was previously enabled before specialMode()
+#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+    if (spiType == HW_SPI) {
+      SPI.begin();
+    }
+#endif
   }
 }
 

@@ -6,29 +6,43 @@
 
 This library is designed to interface with the Texas Instruments [TLC5916 and TLC5917 8-Channel Constant-Current LED Sink Drivers][1].
 
-The library supports up to 254 TLC591x chips cascaded together.
+A minimum of three I/O pins are required (SDI, CLK, LE). An optional fourth pin can be defined for the output enable signal (/OE). If not used, the library assumes that the pin is tied low (and the LED output is always enabled). The /OE pin is required if you want to switch the chip to Special Mode.
 
-The TLC591x chips use a serial interface to transfer data. A minimum of three I/O pins are required (SDI, CLK, LE). An optional fourth pin can be defined for the output enable signal (/OE). If not used, the library assumes that the pin is tied low (and the LED output is always enabled). The /OE pin is required if you want to switch the chip to Special Mode.
+This library can use either a processor's built-in hardware SPI interface (by way of the Arduino SPI library), or a software serial interface which allows just about any I/O pin to be used to control the TLC591x chip.
 
-The library can control various LED configurations: LED bar graph, common anode 7-segment displays, or individual LEDs.
+Up to 254 TLC591x chips can be cascaded together to control various LED configurations: LED bar graph, common anode 7-segment displays, or individual LEDs.
 
 ## Usage
 
-*See the sketch included in the `examples` folder.*
+*See the sketches included in the `examples` folder.*
 
-Use one of the following forms of the constructor to set up the pins used to interface with the TLC591x chip:
+1. Include the header file:
 
-```cpp
-TLC591x myLED(1, 4, 5, 6, 7);    // OE pin controlled by library
-TLC591x myLED(1, 4, 5, 6);       // OE pin hard-wired low (always enabled)
-```
+    ```cpp
+    #include <TLC591x.h>
+    ```
 
-The parameters to the constructor, in order, are: # of chips, SDI pin, CLK pin, LE pin, and /OE pin (if used). If using the /OE pin, the default state is for the display to be turned off, so the enableDisplay() method needs to be called to turn on the display.
+2. Use a constructor to create an LED object:
 
-The "# of chips" parameter defines how many chips are cascaded together. The chips include a serial data output (SDO) pin so that several chips can be connected in a daisy-chain configuration.
+    - For software SPI, use one of the following:
 
-Once you have created a TLC591x object, the following methods can be
-used to control the LEDs.
+    ```cpp
+    TLC591x myLED(num_chips, SDI_pin, CLK_pin, LE_pin, OE_pin);  // OE pin controlled by library
+    TLC591x myLED(num_chips, SDI_pin, CLK_pin, LE_pin);          // OE pin hard-wired low (always enabled)
+    ```
+
+   - For hardware SPI, use one of the following:
+
+    ```cpp
+    TLC591x myLED(num_chips, LE_pin, OE_pin);  // OE pin controlled by library
+    TLC591x myLED(num_chips, LE_pin);          // OE pin hard-wired low (always enabled)
+    ```
+
+    The `num_chips` parameter defines how many chips are cascaded together (maximum of 254). The chips include a serial data output (SDO) pin so that several chips can be connected in a daisy-chain configuration.
+
+    If using the /OE pin, the default state is for the display to be turned off, so the `enableDisplay()` method needs to be called to turn on the display.
+
+3. Once you have created a TLC591x object, the following methods can be used to control the LEDs.
 
 - Print ASCII characters to 7-segment displays:
 
@@ -36,7 +50,7 @@ used to control the LEDs.
    void print(char* s)
    ```
 
-   `s` is a char array with a size of at least "# of chips" containing ASCII characters. It is similar to a c-string but does not need to be null-terminated since its size is assumed to be the "# of chips" as defined in the constructor. Any characters beyond the number of chips defined in the constructor are ignored.
+   `s` is a char array with a size of at least `num_chips` containing ASCII characters. It is similar to a c-string but does not need to be null-terminated since its size is assumed to be the "# of chips" as defined in the constructor. Any characters beyond the number of chips defined in the constructor are ignored.
 
    The most significant digit is in element 0 of the array.
 
@@ -73,7 +87,7 @@ used to control the LEDs.
     void printDirect(const uint8_t* b)
    ```
 
-   `b` is an array of size of at least "# of chips". The values are shifted out right to left (i.e., `b[0]` is shifed out last).
+   `b` is an array of size of at least `num_chips`. The values are shifted out right to left (i.e., `b[0]` is shifed out last).
 
 - Control the output enable (/OE) signal. These meethods only have an effect if the OE pin was defined in the constructor.
 
@@ -103,7 +117,7 @@ used to control the LEDs.
    void specialMode();
    ```
 
-   The chip must have the /OE signal connected to the microcontroller (and defined in the constructor) for this method to have an effect. Note that switching to Special Mode disables the display. Once the chip is in special mode, the Configuration Latch can be written using the printDirect() method.
+   The chip must have the /OE signal connected to the microcontroller (and defined in the constructor) for this method to have an effect. While in Special Mode, the display is disabled. Once the chip is in special mode, the Configuration Latch can be written using the printDirect() method.
 
 - To conntrol the display brightness:
 
@@ -116,6 +130,14 @@ used to control the LEDs.
 ## Hardware Design
 
 A reference design incorporating two TLC5916/7 chips and various LEDs configurations is available in the [extras/hardware][2] folder.
+
+## Hardware and Software SPI Compatibility
+
+This library should work with any processor that is supported by the Arduino IDE when using software SPI. It has been tested with AVR and MSP430 processors.
+
+There are known issues when using hardware SPI with Texas Instruments MSP432 and Tiva processors, due to incompatibilities with the SPI library included with those hardware cores. This library and the example sketches include compiler directives to disable hardware SPI support for those platforms.
+
+It is possible that other hardware platforms may have similar incompatibilities. Feel free to open an issue if you find one.
 
 ## References
 

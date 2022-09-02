@@ -3,7 +3,7 @@
    8-Channel Constant-Current LED Sink Drivers.
 
    This example uses software (bit-bang) interface. 
-   
+
    https://github.com/Andy4495/TLC591x
 
 */
@@ -20,7 +20,7 @@
 // First parameter in constructor is # of TLC591x chips -- this example assumes 2 chips
 // Constructor parameters: # of chips, SDI in, CLK pin, LE pin, OE pin (optional parameter)
 //TLC591x myLED(2, 7, 8, 9);    // Uncomment if not using OE pin
-TLC591x myLED(2, 5, 6, 7, 8); // Uncomment if using OE pin
+TLC591x myLED(2, 5, 6, 7, 9); // Uncomment if using OE pin
 
 void setup() {
   myLED.displayEnable();     // This command has no effect if you aren't using OE pin
@@ -32,11 +32,12 @@ void loop() {
   uint8_t n[2];
 
   // Test displayBrightness()    -- This only does anything if /OE pin is connected and is PWM-capable and defined in contructor
+  // Display gets dimmer as number increases. 0 is brightest, 255 is dimmest.
   for (i = 0; i <= 255; i = i + 16) {
     sprintf(s, "%2x", i);
     myLED.print(s);
     myLED.displayBrightness(i);
-    delay(500);
+    delay(1000);
   }
   delay(1000);
   myLED.displayBrightness(0); // back to max brightness
@@ -49,8 +50,7 @@ void loop() {
   n[1] = 0xA0;
   myLED.printDirect(n);
   myLED.normalMode();
-  myLED.displayEnable();
-  delay(1000);
+  delay(2000);
 
   myLED.print("C0");
   myLED.specialMode();
@@ -58,8 +58,7 @@ void loop() {
   n[1] = 0xc0;
   myLED.printDirect(n);
   myLED.normalMode();
-  myLED.displayEnable();
-  delay(1000);
+  delay(2000);
 
   myLED.print("E0");
   myLED.specialMode();
@@ -67,8 +66,7 @@ void loop() {
   n[1] = 0xe0;
   myLED.printDirect(n);
   myLED.normalMode();
-  myLED.displayEnable();
-  delay(1000);
+  delay(2000);
 
   myLED.print("FF");
   myLED.specialMode();
@@ -76,8 +74,7 @@ void loop() {
   n[1] = 0xff;
   myLED.printDirect(n);
   myLED.normalMode();
-  myLED.displayEnable();
-  delay(1000);
+  delay(2000);
 
 
   // Example using 2x7 segment display
