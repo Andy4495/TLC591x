@@ -10,6 +10,7 @@
                                un-numbered file version.
    1.2.0    01/17/2021  A.T.   Add support for special mode.
    1.3.0    08/31/2022  Andy4495  Add hardware SPI support
+   1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
 */
 
 #include "TLC591x.h"
@@ -40,7 +41,6 @@ TLC591x::TLC591x(byte n, byte SDI, byte CLK, byte LE) {
   init();
 }
 
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
 // Hardware SPI constructors
 TLC591x::TLC591x(byte n, byte LE, byte OE) {
   LE_pin  = LE;
@@ -64,8 +64,6 @@ TLC591x::TLC591x(byte n, byte LE) {
   spiType = HW_SPI;
   init();
 }
-#endif
-
 
 void TLC591x::init() {
   if (numchips < MINCHIPS) numchips = MINCHIPS;
@@ -131,13 +129,11 @@ void TLC591x::displayDisable() {
 
 void TLC591x::normalMode() {
   if (OE_pin != NO_PIN) {
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
     if (spiType == HW_SPI) {
       SPI.end();
       digitalWrite(CLK_pin, LOW);
       pinMode(CLK_pin, OUTPUT);
     }
-#endif
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -147,23 +143,19 @@ void TLC591x::normalMode() {
     toggleCLK();   // Mode switching
     toggleCLK();   // Now in normal mode
     if (enableState == ENABLED) displayEnable(); // Re-enable display if it was enabled previously
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
     if (spiType == HW_SPI) {
       SPI.begin();
     }
-#endif
   }
 }
 
 void TLC591x::specialMode() {
   if (OE_pin != NO_PIN) {
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
     if (spiType == HW_SPI) {
       SPI.end();
       digitalWrite(CLK_pin, LOW);
       pinMode(CLK_pin, OUTPUT);
     }
-#endif
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -176,11 +168,9 @@ void TLC591x::specialMode() {
     toggleCLK();   // Now in special mode
     // Switching to special mode disables the display
     // normalMode() automatically re-enables display if it was previously enabled before specialMode()
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
     if (spiType == HW_SPI) {
       SPI.begin();
     }
-#endif
   }
 }
 
@@ -207,12 +197,20 @@ void TLC591x::write(byte n) {
     digitalWrite(SDI_pin, n & 0x80);
     toggleCLK();
   }
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
+#if !defined(ENERGIA_ARCH_MSP432R) && !defined(ENERGIA_ARCH_MSP432E)
   else {
     SPI.beginTransaction(SPISettings(10000000, LSBFIRST, SPI_MODE0));
     SPI.transfer(n);
     toggleLE();
     SPI.endTransaction();
+  }
+#else  // Special code for MSP432 since it has an older version of SPI library
+  else {
+    SPI.setBitOrder(LSBFIRST);
+    SPI.setClockDivider(SPI_CLOCK_DIV4);
+    SPI.setDataMode(SPI_MODE0);
+    SPI.transfer(n);
+    toggleLE();
   }
 #endif
 }

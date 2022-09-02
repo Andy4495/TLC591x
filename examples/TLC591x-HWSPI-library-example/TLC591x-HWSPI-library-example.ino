@@ -9,30 +9,22 @@
 */
 /* Version History
    1.0.0    08/31/2022  Andy4495   Original
+   1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
 */
 #include <TLC591x.h>
 #if defined(ENERGIA_ARCH_MSP432R)
 #include <stdio.h>
 #endif
 
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
 // First parameter in constructor is # of TLC591x chips -- this example assumes 2 chips
 // Constructor parameters for HW SPI: # of chips, LE pin, OE pin (optional parameter)
 // For Hardware SPI on UNO, connect SDI to UNO pin 11 and CLK to UNO pin 13
 //TLC591x myLED(2, 7);    // Uncomment if not using OE pin
 TLC591x myLED(2, 5, 9); // Uncomment if using OE pin
-#else
-// This is here so that automated compilation tests don't fail.
-#warning This library does not support hardware SPI on tivac and msp432r platforms
-#warning Using software SPI instead
-TLC591x myLED(2, 5, 6, 7, 8);
-#endif
 
 void setup() {
   myLED.displayEnable();     // This command has no effect if you aren't using OE pin
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
   SPI.begin();
-#endif
 }
 
 void loop() {
@@ -88,7 +80,7 @@ void loop() {
 
   // Example using 2x7 segment display
   // First, scroll "Arduino" across the display
-  strncpy(s, "Arduino ", 8);
+  memcpy(s, "Arduino ", 8);
   for (i = 0; i < 7; i++) {
     myLED.print(&s[i]);
     delay(500);

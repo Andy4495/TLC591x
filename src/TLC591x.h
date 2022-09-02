@@ -8,14 +8,17 @@
    1.1.0    09/25/2020  A.T.   Support more daisy-chained digits.
    1.2.0    01/17/2021  A.T.   Add support for special mode.
    1.3.0    08/31/2022  Andy4495  Add hardware SPI support
-
+   1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
 */
 #ifndef TLC591x_LIBRARY
 #define TLC591x_LIBRARY
 
 #include <Arduino.h>
-#if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
 #include <SPI.h>
+
+// MSP432 and Tiva platforms do not define SPI SCK signal in core library
+#if !defined(SCK)
+#define SCK 7
 #endif
 
 class TLC591x {
@@ -25,11 +28,9 @@ public:
   // Software SPI interface
   TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE);
   TLC591x(byte n, byte SDI, byte CLK, byte LE);
-  #if !defined(ENERGIA_ARCH_TIVAC) && !defined(ENERGIA_ARCH_MSP432R)
   // Hardware SPI interface
   TLC591x(byte n, byte LE, byte OE);
   TLC591x(byte n, byte LE);
-  #endif
 
   void print(const char* s);
   void print(unsigned int n);

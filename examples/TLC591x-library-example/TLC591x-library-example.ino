@@ -11,6 +11,7 @@
    1.0.0    08/06/2018  A.T.   Original
    1.1.0    01/23/2021  A.T.   Add examples for displayBrighness and specialMode(), normalMode()
    1.3.0    08/31/2022  A.T.   Add ifdef to make compatible with MSP432
+   1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
 */
 #include <TLC591x.h>
 #if defined(ENERGIA_ARCH_MSP432R)
@@ -79,7 +80,7 @@ void loop() {
 
   // Example using 2x7 segment display
   // First, scroll "Arduino" across the display
-  strncpy(s, "Arduino ", 8);
+  memcpy(s, "Arduino ", 8);
   for (i = 0; i < 7; i++) {
     myLED.print(&s[i]);
     delay(500);
