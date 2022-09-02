@@ -133,11 +133,11 @@ A reference design incorporating two TLC5916/7 chips and various LEDs configurat
 
 ## Hardware and Software SPI Compatibility
 
-This library should work with any processor that is supported by the Arduino IDE when using software SPI. It has been tested with AVR and MSP430 processors.
+The library has been tested with AVR and MSP430 processors using both hardware and software SPI.
 
-There are known issues when using hardware SPI with Texas Instruments MSP432 and Tiva processors, due to incompatibilities with the SPI library included with those hardware cores. This library and the example sketches include compiler directives to disable hardware SPI support for those platforms.
+Because it uses platform-agnostic `digitalWrite()` functions to control the hardware when using software SPI,  this library should work with any processor that is supported by the Arduino IDE when using software SPI.
 
-It is possible that other hardware platforms may have similar incompatibilities. Feel free to open an issue if you find one.
+There are known issues when using hardware SPI with Texas Instruments MSP432 and Tiva processors, due to incompatibilities with the SPI library included with those hardware cores. This library and the example sketches include compiler directives to disable hardware SPI support for those platforms. Future versions of this library may fix this. See [Issue #4][3].
 
 ## References
 
@@ -149,6 +149,7 @@ The software and other files in this repository are released under what is commo
 
 [1]: http://www.ti.com/lit/ds/symlink/tlc5916.pdf
 [2]: ./extras/hardware
+[3]: https://github.com/Andy4495/TLC591x/issues/4
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [200]: https://github.com/Andy4495/TLC591x
