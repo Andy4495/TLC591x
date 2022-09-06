@@ -17,8 +17,10 @@
 #include <SPI.h>
 
 // MSP432 and Tiva platforms do not define SPI SCK signal in core library
+#if defined(ENERGIA_ARCH_TIVAC) || defined(ENERGIA_ARCH_MSP432R)
 #if !defined(SCK)
 #define SCK 7
+#endif
 #endif
 
 class TLC591x {
