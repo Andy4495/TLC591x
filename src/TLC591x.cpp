@@ -11,6 +11,7 @@
    1.2.0    01/17/2021  A.T.   Add support for special mode.
    1.3.0    08/31/2022  Andy4495  Add hardware SPI support
    1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
+                                  Fix potential race condition between pwm brightness and special mode
 */
 
 #include "TLC591x.h"
@@ -23,8 +24,9 @@ TLC591x::TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE) {
   OE_pin  = OE;
   numchips = n;
 
-  digitalWrite(OE_pin, HIGH);
+  digitalWrite(OE_pin, HIGH);  // Default is disabled
   enableState = DISABLED;
+  pwmMode = DISABLED;
   pinMode(OE_pin, OUTPUT);
   spiType = SW_SPI;
   init();
@@ -48,8 +50,9 @@ TLC591x::TLC591x(byte n, byte LE, byte OE) {
   CLK_pin = SCK;
   SDI_pin = NO_PIN;
   numchips = n;
-  digitalWrite(OE_pin, HIGH);
+  digitalWrite(OE_pin, HIGH);  // Default is disabled
   enableState = DISABLED;
+  pwmMode = DISABLED;   // Used to indicate if the the displayBrightness() method was used
   pinMode(OE_pin, OUTPUT);  
   spiType = HW_SPI;
   init();
@@ -117,6 +120,7 @@ void TLC591x::displayEnable() {
   if (OE_pin != NO_PIN) {
     digitalWrite(OE_pin, LOW);
     enableState = ENABLED;
+    pwmMode = DISABLED;
   }
 }
 
@@ -124,6 +128,7 @@ void TLC591x::displayDisable() {
   if (OE_pin != NO_PIN) {
     digitalWrite(OE_pin, HIGH);
     enableState = DISABLED;
+    pwmMode = DISABLED;
   }
 }
 
@@ -134,6 +139,7 @@ void TLC591x::normalMode() {
       digitalWrite(CLK_pin, LOW);
       pinMode(CLK_pin, OUTPUT);
     }
+    pwmMode = DISABLED;
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -156,6 +162,7 @@ void TLC591x::specialMode() {
       digitalWrite(CLK_pin, LOW);
       pinMode(CLK_pin, OUTPUT);
     }
+    pwmMode = DISABLED;
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -175,10 +182,16 @@ void TLC591x::specialMode() {
 }
 
 void TLC591x::displayBrightness(byte b) {
-  if (OE_pin != NO_PIN) analogWrite(OE_pin, b);
+  if (OE_pin != NO_PIN) {
+    analogWrite(OE_pin, b);
+    pwmMode = ENABLED;
+    enableState = ENABLED;
+    brightness = b;
+  }
 }
 
 void TLC591x::write(byte n) {
+  if (OE_pin != NO_PIN && pwmMode == ENABLED) digitalWrite(OE_pin, ENABLED);  // Need a continuous level on OE when writing
   if (spiType == SW_SPI) {
     digitalWrite(SDI_pin, n & 0x01);
     toggleCLK();
@@ -213,6 +226,7 @@ void TLC591x::write(byte n) {
     toggleLE();
   }
 #endif
+  if (OE_pin != NO_PIN && pwmMode == ENABLED ) displayBrightness(brightness);   // Switch back to previous setting
 }
 
 void TLC591x::toggleLE() {

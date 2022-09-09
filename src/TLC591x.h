@@ -9,6 +9,7 @@
    1.2.0    01/17/2021  A.T.   Add support for special mode.
    1.3.0    08/31/2022  Andy4495  Add hardware SPI support
    1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
+                                  Fix potential race condition between pwm brightness and special mode
 */
 #ifndef TLC591x_LIBRARY
 #define TLC591x_LIBRARY
@@ -48,8 +49,10 @@ private:
   enum {MINCHIPS = 1, MAXCHIPS = 254};
   enum {SW_SPI, HW_SPI};
   byte SDI_pin, CLK_pin, LE_pin, OE_pin, numchips;
-  enum {ENABLED = 1, DISABLED = 0};
-  byte enableState;
+  enum EN_DIS {ENABLED = 0, DISABLED = 255};
+  EN_DIS enableState;
+  EN_DIS pwmMode;       // Used to keep track of whether the displayBrightness() method was used
+  byte brightness;
   byte spiType;
 
   void write(byte n);
