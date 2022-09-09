@@ -40,7 +40,7 @@ Up to 254 TLC591x chips can be cascaded together to control various LED configur
 
     The `num_chips` parameter defines how many chips are cascaded together (maximum of 254). The chips include a serial data output (SDO) pin so that several chips can be connected in a daisy-chain configuration.
 
-    If using the /OE pin, the default state is for the display to be turned off, so the `enableDisplay()` method needs to be called to turn on the display.
+    If using the /OE pin, the default state is for the display to be turned off, so the `enableDisplay()` method needs to be called to turn on the display after powering up.
 
 3. Once you have created a TLC591x object, the following methods can be used to control the LEDs.
 
@@ -50,7 +50,7 @@ Up to 254 TLC591x chips can be cascaded together to control various LED configur
    void print(char* s)
    ```
 
-   `s` is a char array with a size of at least `num_chips` containing ASCII characters. It is similar to a c-string but does not need to be null-terminated since its size is assumed to be the "# of chips" as defined in the constructor. Any characters beyond the number of chips defined in the constructor are ignored.
+   `s` is a char array with a size of at least `num_chips` containing ASCII characters. It is similar to a c-string but does not need to be null-terminated since its size is assumed to be `num_chips` as defined in the constructor. Any characters beyond the number of chips defined in the constructor are ignored.
 
    The most significant digit is in element 0 of the array.
 
@@ -89,7 +89,7 @@ Up to 254 TLC591x chips can be cascaded together to control various LED configur
 
    `b` is an array of size of at least `num_chips`. The values are shifted out right to left (i.e., `b[0]` is shifed out last).
 
-- Control the output enable (/OE) signal. These meethods only have an effect if the OE pin was defined in the constructor.
+- Control the output enable (/OE) signal. These methods only have an effect if the OE pin was defined in the constructor. Also, they override the brightness setting of `displayBrightness()`.
 
    ```cpp
    void displayEnable();
@@ -103,7 +103,7 @@ Up to 254 TLC591x chips can be cascaded together to control various LED configur
 
    Sets the output enable (/OE) signal high, which turns off the display.  
 
-- To put the TLC591x chip into Normal Mode (see [datasheet][1] for more info):
+- To put the TLC591x chip into Normal Mode (see [datasheet][1] for more info). This method overrides the brightness setting of `displayBrightness()`:
 
    ```cpp
    void normalMode();
@@ -111,7 +111,7 @@ Up to 254 TLC591x chips can be cascaded together to control various LED configur
 
    The chip is in normal mode by default when powered on.
 
-- To put the TLC591x chip into Special Mode (see [datasheet][1] for more info):
+- To put the TLC591x chip into Special Mode (see [datasheet][1] for more info). This method overrides the brightness setting of `displayBrightness()`:
 
    ```cpp
    void specialMode();
@@ -127,17 +127,21 @@ Up to 254 TLC591x chips can be cascaded together to control various LED configur
 
    Uses PWM on /OE pin to control display brightness. This method requires that the /OE pin is a PWM-capable pin and is defined in the constructor. Note that since /OE is active low, a value of zero is brightest and 255 is dimmest.
 
+   This method enables the display, so that if the display was previously disabled with `displayDisable()`, the display will be turned on. The brightness setting is overwritten by any of the following methods: `enableDisplay()`, `disableDisplay()`, `normalMode()`, `specialMode()`.
+
+   This command should only be used while the display is in normal mode. Unexpected results may occur if this method is called while in special mode.
+
 ## Hardware Design
 
 A reference design incorporating two TLC5916/7 chips and various LEDs configurations is available in the [extras/hardware][2] folder.
 
 ## Hardware and Software SPI Compatibility
 
-The library has been tested with AVR and MSP430 processors using both hardware and software SPI.
+The library has been tested with AVR, MSP430, MSP432, and Tiva processors using both hardware and software SPI.
 
-Because it uses platform-agnostic `digitalWrite()` functions to control the hardware when using software SPI,  this library should work with any processor that is supported by the Arduino IDE when using software SPI.
+When configured to use software SPI, this library should work with any processor that is supported by the Arduino IDE, because it uses platform-agnostic `digitalWrite()` functions to control the hardware.
 
-There are known issues when using hardware SPI with Texas Instruments MSP432 and Tiva processors, due to incompatibilities with the SPI library included with those hardware cores. This library and the example sketches include compiler directives to disable hardware SPI support for those platforms. Future versions of this library may fix this. See [Issue #4][3].
+While the library has been tested with the hardware platforms listed above, there could potentially be compatibility issues with other platforms when using hardware SPI.
 
 ## References
 
@@ -149,7 +153,6 @@ The software and other files in this repository are released under what is commo
 
 [1]: http://www.ti.com/lit/ds/symlink/tlc5916.pdf
 [2]: ./extras/hardware
-[3]: https://github.com/Andy4495/TLC591x/issues/4
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/TLC591x)
