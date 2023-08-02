@@ -4,6 +4,12 @@ name: Arduino Compile Sketches
 
 on: 
   push:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: Message to display in job summary
+        required: false
+        type: string
 
 jobs:
   compile-sketches: 
@@ -30,13 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          java-package: 'jre'
-      - run: | 
-          if [ ! -f /usr/bin/java ] ; then ln -s `which java` /usr/bin/java ; fi
       - uses: arduino/compile-sketches@v1
         with:
           fqbn: ${{ matrix.fqbn }}
@@ -50,4 +49,7 @@ jobs:
           enable-warnings-report: true
           libraries: |
             - source-path: ./
-
+      - name: Print the job summary
+        if: ${{ inputs.message }}
+        run: |
+          echo ${{ inputs.message }} >$GITHUB_STEP_SUMMARY
