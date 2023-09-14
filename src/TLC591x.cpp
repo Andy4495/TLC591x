@@ -12,6 +12,7 @@
    1.3.0    08/31/2022  Andy4495  Add hardware SPI support
    1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
                                   Fix potential race condition between pwm brightness and special mode
+   1.4.2    09/13/2022  Andy4495  Fix compilation issue with ESP32 (#6)
 */
 
 #include "TLC591x.h"
