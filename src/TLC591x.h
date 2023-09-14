@@ -49,7 +49,7 @@ private:
   enum {MINCHIPS = 1, MAXCHIPS = 254};
   enum {SW_SPI, HW_SPI};
   byte SDI_pin, CLK_pin, LE_pin, OE_pin, numchips;
-  enum EN_DIS {ENABLED = 0, DISABLED = 255};
+  enum EN_DIS {TLC_ENABLED = 0, TLC_DISABLED = 255};
   EN_DIS enableState;
   EN_DIS pwmMode;       // Used to keep track of whether the displayBrightness() method was used
   byte brightness;

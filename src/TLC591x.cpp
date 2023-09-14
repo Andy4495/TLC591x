@@ -25,8 +25,8 @@ TLC591x::TLC591x(byte n, byte SDI, byte CLK, byte LE, byte OE) {
   numchips = n;
 
   digitalWrite(OE_pin, HIGH);  // Default is disabled
-  enableState = DISABLED;
-  pwmMode = DISABLED;
+  enableState = TLC_DISABLED;
+  pwmMode = TLC_DISABLED;
   pinMode(OE_pin, OUTPUT);
   spiType = SW_SPI;
   init();
@@ -51,8 +51,8 @@ TLC591x::TLC591x(byte n, byte LE, byte OE) {
   SDI_pin = NO_PIN;
   numchips = n;
   digitalWrite(OE_pin, HIGH);  // Default is disabled
-  enableState = DISABLED;
-  pwmMode = DISABLED;   // Used to indicate if the the displayBrightness() method was used
+  enableState = TLC_DISABLED;
+  pwmMode = TLC_DISABLED;   // Used to indicate if the the displayBrightness() method was used
   pinMode(OE_pin, OUTPUT);  
   spiType = HW_SPI;
   init();
@@ -119,16 +119,16 @@ void TLC591x::printDirect(const uint8_t* s) {
 void TLC591x::displayEnable() {
   if (OE_pin != NO_PIN) {
     digitalWrite(OE_pin, LOW);
-    enableState = ENABLED;
-    pwmMode = DISABLED;
+    enableState = TLC_ENABLED;
+    pwmMode = TLC_DISABLED;
   }
 }
 
 void TLC591x::displayDisable() {
   if (OE_pin != NO_PIN) {
     digitalWrite(OE_pin, HIGH);
-    enableState = DISABLED;
-    pwmMode = DISABLED;
+    enableState = TLC_DISABLED;
+    pwmMode = TLC_DISABLED;
   }
 }
 
@@ -139,7 +139,7 @@ void TLC591x::normalMode() {
       digitalWrite(CLK_pin, LOW);
       pinMode(CLK_pin, OUTPUT);
     }
-    pwmMode = DISABLED;
+    pwmMode = TLC_DISABLED;
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -148,7 +148,7 @@ void TLC591x::normalMode() {
     toggleCLK();
     toggleCLK();   // Mode switching
     toggleCLK();   // Now in normal mode
-    if (enableState == ENABLED) displayEnable(); // Re-enable display if it was enabled previously
+    if (enableState == TLC_ENABLED) displayEnable(); // Re-enable display if it was enabled previously
     if (spiType == HW_SPI) {
       SPI.begin();
     }
@@ -162,7 +162,7 @@ void TLC591x::specialMode() {
       digitalWrite(CLK_pin, LOW);
       pinMode(CLK_pin, OUTPUT);
     }
-    pwmMode = DISABLED;
+    pwmMode = TLC_DISABLED;
     digitalWrite(OE_pin, HIGH);
     toggleCLK();
     digitalWrite(OE_pin, LOW);
@@ -184,14 +184,14 @@ void TLC591x::specialMode() {
 void TLC591x::displayBrightness(byte b) {
   if (OE_pin != NO_PIN) {
     analogWrite(OE_pin, b);
-    pwmMode = ENABLED;
-    enableState = ENABLED;
+    pwmMode = TLC_ENABLED;
+    enableState = TLC_ENABLED;
     brightness = b;
   }
 }
 
 void TLC591x::write(byte n) {
-  if (OE_pin != NO_PIN && pwmMode == ENABLED) digitalWrite(OE_pin, ENABLED);  // Need a continuous level on OE when writing
+  if (OE_pin != NO_PIN && pwmMode == TLC_ENABLED) digitalWrite(OE_pin, TLC_ENABLED);  // Need a continuous level on OE when writing
   if (spiType == SW_SPI) {
     digitalWrite(SDI_pin, n & 0x01);
     toggleCLK();
@@ -226,7 +226,7 @@ void TLC591x::write(byte n) {
     toggleLE();
   }
 #endif
-  if (OE_pin != NO_PIN && pwmMode == ENABLED ) displayBrightness(brightness);   // Switch back to previous setting
+  if (OE_pin != NO_PIN && pwmMode == TLC_ENABLED ) displayBrightness(brightness);   // Switch back to previous setting
 }
 
 void TLC591x::toggleLE() {
