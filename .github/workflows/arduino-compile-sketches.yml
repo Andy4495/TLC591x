@@ -32,6 +32,10 @@ jobs:
             fqbn: 'energia:tivac:EK-TM4C123GXL'
             platform-name: 'energia:tivac'
             platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/main/json/package_energia_minimal_TM4C_104_alternate_index.json'
+          - arch: stm32
+            fqbn: 'STMicroelectronics:stm32:GenF1:pnum=BLUEPILL_F103C8'
+            platform-name: 'STMicroelectronics:stm32'
+            platform-sourceurl: 'https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json'
           - arch: esp32
             fqbn: 'esp32:esp32:esp32'
             platform-name: 'esp32:esp32'
