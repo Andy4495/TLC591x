@@ -23,15 +23,15 @@ jobs:
           - arch: msp
             fqbn: 'energia:msp430:MSP-EXP430G2553LP'
             platform-name: 'energia:msp430'
-            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/main/json/package_energia_minimal_MSP_107_index.json'
+            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/refs/heads/main/json/package_energia_minimal_msp430_index.json'
           - arch: msp432
-            fqbn: 'energia:msp432r:MSP-EXP432P401R'
-            platform-name: 'energia:msp432r'
-            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/main/json/package_energia_minimal_MSP432r_index.json'
+            fqbn: 'energia:msp432:MSP-EXP432P401R'
+            platform-name: 'energia:msp432'
+            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/refs/heads/main/json/package_energia_minimal_msp432_index.json'
           - arch: tivac
             fqbn: 'energia:tivac:EK-TM4C123GXL'
             platform-name: 'energia:tivac'
-            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/main/json/package_energia_minimal_TM4C_104_alternate_index.json'
+            platform-sourceurl: 'https://raw.githubusercontent.com/Andy4495/TI_Platform_Cores_For_Arduino/refs/heads/main/json/package_energia_minimal_tiva_index.json'
           - arch: stm32
             fqbn: 'STMicroelectronics:stm32:GenF1:pnum=BLUEPILL_F103C8'
             platform-name: 'STMicroelectronics:stm32'
