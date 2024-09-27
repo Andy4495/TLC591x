@@ -211,7 +211,7 @@ void TLC591x::write(byte n) {
     digitalWrite(SDI_pin, n & 0x80);
     toggleCLK();
   }
-#if !defined(ENERGIA_ARCH_MSP432R) && !defined(ENERGIA_ARCH_MSP432E)
+#if !defined(ENERGIA_ARCH_MSP432R) && !defined(ENERGIA_ARCH_MSP432E) && !defined(ENERGIA_ARCH_MSP432)
   else {
     SPI.beginTransaction(SPISettings(10000000, LSBFIRST, SPI_MODE0));
     SPI.transfer(n);

@@ -12,8 +12,9 @@
    1.4.0    09/02/2022  Andy4495  Fix hardware SPI support for msp432r and tivac
 */
 #include <TLC591x.h>
-#if defined(ENERGIA_ARCH_MSP432R)
-#include <stdio.h>
+#if defined(ENERGIA_ARCH_MSP432R) || defined(ENERGIA_ARCH_MSP432)
+#include <cstdio>
+#warning "ENERGIA_ARCH_MSP432 detected"
 #endif
 
 // First parameter in constructor is # of TLC591x chips -- this example assumes 2 chips
