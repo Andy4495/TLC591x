@@ -215,7 +215,6 @@ void TLC591x::write(byte n) {
   else {
     SPI.beginTransaction(SPISettings(10000000, LSBFIRST, SPI_MODE0));
     SPI.transfer(n);
-    toggleLE();
     SPI.endTransaction();
   }
 #else  // Special code for MSP432 since it has an older version of SPI library
@@ -224,7 +223,6 @@ void TLC591x::write(byte n) {
     SPI.setClockDivider(SPI_CLOCK_DIV4);
     SPI.setDataMode(SPI_MODE0);
     SPI.transfer(n);
-    toggleLE();
   }
 #endif
   if (OE_pin != NO_PIN && pwmMode == TLC_ENABLED ) displayBrightness(brightness);   // Switch back to previous setting
